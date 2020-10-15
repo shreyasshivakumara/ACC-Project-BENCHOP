@@ -1,14 +1,6 @@
-# openstack stack create -t main_vm.yml tabea_stack
-# openstack stack list
-# openstack stack event list tabea_stack
-# openstack stack delete tabea_stack
-
-# openstack console log show tabea_main
-
-
 heat_template_version: 2013-05-23
 
-description: Single tweet processing machineCalculation BENCHOP in parallel.
+description: Calculation BENCHOP in parallel.
 
 # Parameters
 parameters:
@@ -41,6 +33,10 @@ parameters:
     label: Number of slaves
     description: Number of slaves for working on BENCHOP in parallel. 
     default: 2
+  vol_size:
+    type: number
+    description: The size of the Cinder volume
+    default: 1
 
 # Resources
 resources:
@@ -49,7 +45,7 @@ resources:
   main_security_group:
     type: OS::Neutron::SecurityGroup
     properties:
-      name: tabea_networking
+      name: group4_networking
       rules:
         - protocol: icmp
         - protocol: tcp
@@ -130,18 +126,18 @@ resources:
     properties:
       floatingip_id: { get_resource: floating_ip }
       port_id: { get_resource: main_port }
+  my_vol:
+    type: OS::Cinder::Volume
+    properties:
+      size: { get_param: vol_size }
 
-  #volumes
-  #tabea_volume:
-  #  type: OS::Cinder::Volume
-  #  properties:
-  #    snapshot_id: ee5de108-3f16-4814-9faf-ee28ab729bab
-      
-  #attach_tabea_volume:
-  #  type: OS::Cinder::VolumeAttachment
-  #  properties:
-  #    volume_id: {get_resource: tabea_volume}  
-  #    instance_uuid: { get_resource: main_server }
+  vol_att:
+    type: OS::Cinder::VolumeAttachment
+    properties:
+      instance_uuid: { get_resource: main_server }
+      volume_id: { get_resource: my_vol }
+      mountpoint: /dev/vdb
+ 
 
   #slaves
   slaves:
@@ -152,7 +148,7 @@ resources:
         type: slave_vm.yaml
         properties:
           private_network: {get_resource: main_network}
-          name: tabea_slave%index%
+          name: group4_slave%index%
           key: {get_resource: main_key}
           master_ip: {
             get_attr: [main_server, addresses, get_attr: [main_network, name], 1, addr]

@@ -36,6 +36,11 @@ parameters:
     type: string
     label: Master node IP.
     description: Master's node IP for allowing worker connections.
+  
+  vol_size:
+    type: number
+    description: The size of the Cinder volume
+    default: 1
 
 # Resources
 resources:
@@ -65,18 +70,18 @@ resources:
             MASTER_IP: {get_param: master_ip}
       user_data_format: RAW
 
-  #volumes
-  tabea_volume:
+
+  my_vol:
     type: OS::Cinder::Volume
     properties:
-      snapshot_id: ee5de108-3f16-4814-9faf-ee28ab729bab
-      
-  attach_tabea_volume:
+      size: { get_param: vol_size }
+
+  vol_attach:
     type: OS::Cinder::VolumeAttachment
     properties:
-      volume_id: {get_resource: tabea_volume}  
       instance_uuid: { get_resource: slave }
-
+      volume_id: { get_resource: my_vol }
+      mountpoint: /dev/vdb
 # Outputs
 outputs:
   slave_name:
