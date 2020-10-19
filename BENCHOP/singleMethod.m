@@ -10,7 +10,7 @@
 %       notice, this list of conditions and the following disclaimer in
 %       the documentation and/or other materials provided with the distribution
 %    * BENCHOP article is properly cited by the user of the BENCHOP codes when publishing/reporting related scientific results.
-% 
+%
 % THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 % AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 % IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -38,9 +38,15 @@
 % UniformGrid
 
 function [time, relerr] = singleMethod(problem, method)
-
-    if strcmp(method, 'COS') || strcmp(method, 'RBFFD') || strcmp(method, 'UniformGrid')
+    Methods={'MC','MC-S','QMC-S','MLMC','MLMC-A',...
+    'FFT','FGL','COS',...
+    'FD','FD-NU','FD-AD',...
+    'RBF','RBF-FD','RBF-PUM','RBF-LSML','RBF-AD','RBF-MLT'};
+    good_methods = {'COS', 'UniformGrid'};
+    if any(strcmp(good_methods, method))
+    %if strcmp(method, 'COS') || strcmp(method, 'RBFFD') || strcmp(method, 'UniformGrid')
         methodPath = strcat(method, '.m');
+        disp('found the method');
     else
         return
     end
@@ -54,10 +60,9 @@ function [time, relerr] = singleMethod(problem, method)
         filepathsBSeuCallUI=getfilenames('./',strcat('BSeuCallUI_', methodPath));
         par={S,K,T,r,sig};
         [timeBSeuCallUI,relerrBSeuCallUI] = executor(rootpath,filepathsBSeuCallUI,U,par);
-
         time=timeBSeuCallUI(1);
         relerr=relerrBSeuCallUI(1);
-    
+
     %% Problem 1 b) I
     elseif strcmp(problem, 'P1bI')
         rootpath=pwd;
@@ -83,7 +88,7 @@ function [time, relerr] = singleMethod(problem, method)
 
         time=timeBSupoutCallI;
         relerr=relerrBSupoutCallI;
-    
+
     %% Problem 1 a) II
     elseif strcmp(problem, 'P1aII')
         rootpath=pwd;

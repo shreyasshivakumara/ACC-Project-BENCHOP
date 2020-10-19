@@ -7,7 +7,7 @@ from  novaclient import client
 import keystoneclient.v3.client as ksclient
 from keystoneauth1 import loading
 from keystoneauth1 import session
-for i in range(1,4):
+for i in range(4):
     flavor = "ssc.small" 
     private_net = "UPPMAX 2020/1-2 Internal IPv4 Network"
     floating_ip_pool_name = None
