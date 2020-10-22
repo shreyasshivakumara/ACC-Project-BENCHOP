@@ -14,7 +14,7 @@ ALL_PROBLEMS = ['P1aI', 'P1bI', 'P1cI', 'P1aII']
 ALL_METHODS = ['MC','MC-S','QMC-S','MLMC','MLMC-A','FFT','FGL','COS','FD','FD-NU','FD-AD','RBF','RBF-FD','RBF-PUM','RBF-LSML','RBF-AD','RBF-MLT']
 #but for testing puroses, only use subset of methods and problems
 METHODS = ['COS', 'UniformGrid']
-PROBLEMS = ['P1aI', 'P1bI']
+PROBLEMS = ALL_PROBLEMS #['P1aI', 'P1bI']
 ALL_RESULTS = {}
 
 #Start benchmarking tasks. Setting up with the given methods / problems
@@ -81,20 +81,6 @@ def plot(all_results):
 #Start the flask app after all tasks are created
 flask_app = Flask(__name__)
 
-@flask_app.route('/tab', methods=['GET'])
-def just_try():
-	start = time.time()
-	job = []
-	ar = {}
-	for prob in PROBLEMS:
-		for method in METHODS:
-			job.append(singleMethod.delay(prob, method))
-	for j in job:
-		result = j.get()
-		print(j)
-	print(f"\n\n\n ---- \n\n this took {time.time() - start}sec")
-
-
 
 #Updates global variable with newly finished results and returns everything
 @flask_app.route('/benchmark', methods=['GET'])
@@ -128,7 +114,7 @@ def obtain_specific_problem(problem, method):
 	return render_template("webui.html", results = results, time_charts = time_charts, relerr_charts = relerr_charts)
 
 # call one specific problem with JSON output
-@flask_app.route('/benchmark/json/<problem>/<method>', methods=['GET'])
+@flask_app.route('/<problem>/<method>/json', methods=['GET'])
 def obtain_specific_problem_json(problem, method):
 	result = singleMethod.delay(problem, method)
 	results = {'state': 'PENDING', 'id': result.id, 'result': {'time': 0, 'relerr': 0}}
