@@ -10,7 +10,7 @@ echo "Installing pip..."
 sudo apt-get install -y python3-pip
 sudo -H pip3 install --upgrade pip
 
-echo "Installing celery, flasp..."
+echo "Installing celery, flask..."
 sudo -H pip3 install celery
 sudo -H pip3 install Flask
 
