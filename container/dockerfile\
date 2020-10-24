@@ -9,8 +9,7 @@ RUN pip3 install celery==4.4.7
 RUN DEBIAN_FRONTEND=noninteractive apt-get install lightdm -y
 RUN apt-get install -yq less sudo octave
 RUN pip3 install oct2py
-WORKDIR /home/ubuntu/
 RUN git clone https://github.com/TabeaHaverkamp/ACC-Project-BENCHOP.git
-WORKDIR /home/ubuntu/ACC-Project-BENCHOP/BENCHOP/
-ENTRYPOINT celery -A tasks worker -l INFO --max-memory-per-child 100
-
+RUN celery -A tasks worker -l INFO --max-memory-per-child 100
+# run the celery worker
+#RUN screen -S celeryserver -d -m bash -c 'cd /home/ubuntu/ACC-Project-BENCHOP/BENCHOP/ && celery -A tasks worker --loglevel=INFO -n worker1@%h --concurrency=1 --max-memory-per-child = 100'
