@@ -1,0 +1,11 @@
+1. Modify the "BROKER_URL" in setting.py if necessary;
+
+2. Run the server: python3 manage.py runserver, the default port is using port 8000;
+
+3. Start celery: pyhton3 manage.py celery worker --loglevel=info;
+
+4. Visit via browser, http://<IP address>:port/index/. If run locally, use "localhost";
+
+5. Choose the problem you want to try, set parameters;
+
+6. Click "Submit", the tasks will be sent to workers, and results will show below in the same window.
