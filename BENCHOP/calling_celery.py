@@ -85,8 +85,7 @@ flask_app = Flask(__name__)
 #Updates global variable with newly finished results and returns everything
 @flask_app.route('/benchmark', methods=['GET'])
 def obtain_benchmark_results():
-	global ALL_RESULTS, PROBLEMS, METHODS
-	print(PROBLEMS)
+	global ALL_RESULTS, PROBLEMS, METHODS, START
 	setup(PROBLEMS, METHODS)
 	update_results()
 	time_charts, relerr_charts =  plot(ALL_RESULTS)
@@ -100,7 +99,7 @@ def obtain_results_json():
 	global ALL_RESULTS
 	if ALL_RESULTS == {}: # if not called before set up beforehand.
 		setup(PROBLEMS, METHODS)
-	update_results(PROBLEMS, METHODS)
+	update_results()
 	return jsonify(ALL_RESULTS)
 
 
@@ -128,5 +127,15 @@ def obtain_specific_problem_json(problem, method):
 	return jsonify(results)
 
 
+def calculate_time():
+	START = time.time()
+	setup(PROBLEMS, METHODS)
+	for prob in ALL_RESULTS.keys():
+			for method in ALL_RESULTS[prob].keys():
+				result = AsyncResult(ALL_RESULTS[prob][method]['id'], app=celery_app)
+				print(result.get())
+	print(time.time() - START)
+
 if __name__ == '__main__':
-    flask_app.run(host='0.0.0.0', port = 50070, debug=True)
+	setup(PROBLEMS, METHODS)
+	flask_app.run(host='0.0.0.0', port = 50070, debug=True)
