@@ -12,6 +12,8 @@ sudo rabbitmqctl add_user group4 password
 sudo rabbitmqctl add_vhost group4vhost
 sudo rabbitmqctl set_permissions -p group4vhost group4 ".*" ".*" ".*"
 
+
+
 echo "Adding the SSH private key..."
 echo "PRIVATE_KEY" > /home/ubuntu/.ssh/id_rsa
 echo "PUBLIC KEY" > /home/ubuntu/.ssh/id_rsa.pub
@@ -31,10 +33,22 @@ sudo -H apt-get install octave
 sudo -H pip3 install oct2py
 
 
-
+sudo chown -R ubuntu.users /home/ubuntu/ACC-Project-BENCHOP
 echo "Installing the code..."
 cd /home/ubuntu
 sudo git clone https://github.com/TabeaHaverkamp/ACC-Project-BENCHOP.git
+
+
+
+sudo sed 's/localhost/192.168.2.146/' -i /home/ubuntu/ACC-Project-BENCHOP/BENCHOP/celery_app.py  
+##TODO: REPLACE 192.168.2.146 WITH PRIVATE IP
+
+echo "starting celery"
+cd /home/ubuntu/ACC-Project-BENCHOP/BENCHOP 
+sudo screen -S celeryserver -d -m bash -c 'cd /home/ubuntu/ACC-Project-BENCHOP/BENCHOP/ && celery -A tasks worker --loglevel=INFO -n worker1@%h --concurrency=1 --max-memory-per-child 100'
+
+sudo screen -S flask -d -m bash -c 'cd /home/ubuntu/ACC-Project-BENCHOP/BENCHOP/ && python3 calling_celery.py'
+sudo screen -S flower -d -m bash -c 'cd /home/ubuntu/ACC-Project-BENCHOP/BENCHOP/ && flower -A tasks --port=5000'
 
 
 echo "Add authorised keys, so every team member can access."
@@ -44,4 +58,4 @@ echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC1vpoU4XXSokLjtgZbNL6PDL04JiOGv2+ua8
 echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCnWVYlcqttENjr1+OvBLX+bUfUxMpDi4PdzbxYt/nYOw0CNgUsnxQlpXgXQ4BGNI1dtwgOizqntt/8g+FY0QTUbV9tL8ko8nNOQe/g9BC11fkndQvLRR0NHypzK5Ofcvln5WMBN7oVLZJq89ekjZ/lSR0uOnykqEev4k0xBoi8DYN5cDgRkT0T2f6D/+2N0wKCZZruh20FvuithZ8p7Prg5al8LXVt/Zif7hf4NGZNZ7XOZXN0HlW1gWAjbFS00eV4TeDDS7agCh2mjZ4O4hfliW3TDKjAiHg3Srygc6wdvWuIKi8WWpunDd7vdBNUDp+C2LVXM0k9RtW4JpfR6vIF root@vm3'  >> /home/ubuntu/.ssh/authorized_keys
 echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDpxmIxwCnAM8EWAnJI7zvHhMVwg7rqHXZUzg9IUEt8EbYB3lSMOJqB4jTzhyd4+6mFdzTrXT8sFkopi3Xz3PtYtkvcZMmTye1ljlo5axn2Py2odMbSPdByB9Iw6/n7EQHbe1Hxov6akroEZfXXrItTOYK3HlcnUsvC8h7bQ2Yo2U5NeKo7KaFxTMjfS70Y6K9Pw6FfhvPFagP2XTaaC36arz5jCOfCNpFvdeol7iAA3pq6z4xenKG8dIwjc7l+S04chgYdA5d2vsf6GgZf7OFFJtUMScPWUjFng4a2UUulHXXZRFuTNT8aHwNsWEINMq9Rs0Iymo9kvAmDwPCwdhfp root-777@ubuntu' >> /home/ubuntu/.ssh/authorized_keys
 echo "Setting permission"
-sudo chown -R ubuntu.users /home/ubuntu/ACC-Project-BENCHOP
+
