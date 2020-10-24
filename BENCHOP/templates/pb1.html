@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>pb1</title>
+	<style>
+		button{
+			width: 100px;
+			height: 60px;
+			background-color: aquamarine;
+		}
+	</style>
+
+</head>
+
+<body>
+	
+	
+	<h1> Problem 1 b) I </h1> <br>
+	 Set parameters (Blanks will be treated as using the default value) <br><br>
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" class="form_input" name="method" placeholder="Method"/><br>
+        <input type="text" class="form_input" name="S" placeholder="Parameter S"/><br>
+        <input type="text" class="form_input" name="K" placeholder="Parameter K"><br>
+        <input type="text" class="form_input" name="T" placeholder="Parameter T"><br>
+        <input type="text" class="form_input" name="r" placeholder="Parameter r"><br>
+        <input type="text" class="form_input" name="sig" placeholder="Parameter sig"><br>
+        <input type="submit"  value="Submit"><br>
+
+    </form>
+    <h1>Results</h1> <br>
+    <p>Problem: {{ problem}}</p>
+    <p>Method: {{ methods }}</p>
+    <p>Time and relerr: {{ time_and_relerr }}</p>
+	
+</body>
+</html>
