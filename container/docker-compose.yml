@@ -1,9 +1,5 @@
 version: '3'
 services:
-  #web:
-  #  image: raheelthedeveloper/benchop:server
-  #  ports:
-  #    - "5000:5000"
   worker:
-    image: raheelthedeveloper/benchop:benchopImage
+    image: raheelthedeveloper/benchop4:benchopImage
   
